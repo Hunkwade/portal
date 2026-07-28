@@ -204,12 +204,14 @@
     #app {
       display: none;
       min-height: 100vh;
+      width: 100%;
     }
 
     .shell {
       display: grid;
-      grid-template-columns: 236px 1fr;
+      grid-template-columns: 236px minmax(0, 1fr);
       min-height: 100vh;
+      width: 100%;
     }
 
     /* Sidebar */
@@ -353,8 +355,10 @@
 
     /* Main */
     .main {
-      padding: 22px 30px 50px;
-      max-width: 1400px;
+      padding: 22px clamp(20px, 3vw, 48px) 50px;
+      max-width: 1800px;
+      margin: 0 auto;
+      width: 100%;
     }
 
     .topbar {
@@ -1042,6 +1046,20 @@
     }
 
     /* ---------- RESPONSIVE ---------- */
+    @media (min-width:1900px) {
+      .shell {
+        grid-template-columns: 260px minmax(0, 1fr);
+      }
+
+      .stat-grid {
+        gap: 18px;
+      }
+
+      .kanban {
+        gap: 18px;
+      }
+    }
+
     @media (max-width:1100px) {
       .stat-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1409,28 +1427,28 @@
                   <path d="M9 8h6M9 12h6M9 16h4" />
                 </svg></div>
               <div class="tool-title">Invoice Generator</div>
-              <div class="tool-desc">Create paid, due or receipt invoices, logged straight to the sheet.</div>
+              <div class="tool-desc">Create due or paid invoices, logged straight to the sheet.</div>
               <a class="tool-link" href="https://hunkwade.github.io/invoice-generator/" target="_blank">Open generator
                 →</a>
             </div>
             <div class="tool-card">
               <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M6 2h9l3 3v17H6z" />
-                  <path d="M9 8h6M9 12h6M9 16h4" />
+                  <path d="M4 4h16v16H4z" />
+                  <path d="M8 8h8M8 12h8M8 16h4" />
+                  <path d="M4 4l4 4M20 4l-4 4" />
                 </svg></div>
               <div class="tool-title">Letterhead Generator</div>
-              <div class="tool-desc">Create letterheads, logged straight to the sheet.</div>
-              <a class="tool-link" href="https://hunkwade.github.io/letterhead/" target="_blank">Open generator
-                →</a>
+              <div class="tool-desc">Generate branded Raskbind X letterheads for official documents.</div>
+              <a class="tool-link" href="https://hunkwade.github.io/letterhead/" target="_blank">Open generator →</a>
             </div>
             <div class="tool-card">
               <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M6 2h9l3 3v17H6z" />
-                  <path d="M9 8h6M9 12h6M9 16h4" />
+                  <path d="M22 2 11 13" />
+                  <path d="M22 2 15 22l-4-9-9-4 20-7Z" />
                 </svg></div>
-              <div class="tool-title">Mail Invoice Sender</div>
-              <div class="tool-desc">Send invoices via email, logged straight to the sheet.</div>
-              <a class="tool-link" href="https://hunkwade.github.io/invoice-mail-sender/" target="_blank">Open generator
+              <div class="tool-title">Invoice Sender Template</div>
+              <div class="tool-desc">Ready-made email templates for sending invoices to clients.</div>
+              <a class="tool-link" href="https://hunkwade.github.io/invoice-mail-sender/" target="_blank">Open templates
                 →</a>
             </div>
           </div>
