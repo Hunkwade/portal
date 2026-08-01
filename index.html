@@ -1234,6 +1234,14 @@
           </svg>
           Leads <span id="leads-nav-count" class="kanban-count" style="margin-left:auto;"></span>
         </a>
+        <a class="nav-item" data-view="candidates">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          Candidates <span id="candidates-nav-count" class="kanban-count" style="margin-left:auto;"></span>
+        </a>
 
         <div class="nav-group-label">Company Systems</div>
         <a class="nav-item" data-view="tools">
@@ -1401,6 +1409,29 @@
           </div>
         </div>
 
+        <!-- ===== CANDIDATES VIEW ===== -->
+        <div id="view-candidates" style="display:none;">
+          <div style="font-size:12.5px; color:var(--muted); margin-bottom:14px;">Synced from your "RaskbindX CVs" sheet
+            · scheduling sends a real Google Calendar invite automatically</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Contact</th>
+                  <th>Experience</th>
+                  <th>Role</th>
+                  <th>Resume</th>
+                  <th>Message</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="candidates-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
         <!-- ===== LINKED SYSTEMS VIEW ===== -->
         <div id="view-tools" style="display:none;">
           <div class="tool-grid">
@@ -1410,7 +1441,7 @@
                 </svg></div>
               <div class="tool-title">Payables Dashboard</div>
               <div class="tool-desc">Salary, equity and investor payouts — pending and paid, at a glance.</div>
-              <a class="tool-link" href="https://accounts.raskbind.com/" target="_blank">Open dashboard →</a>
+              <a class="tool-link" href="#" target="_blank">Open dashboard →</a>
             </div>
             <div class="tool-card">
               <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1419,7 +1450,7 @@
                 </svg></div>
               <div class="tool-title">Employee Verification</div>
               <div class="tool-desc">QR / ID lookup for employment verification requests.</div>
-              <a class="tool-link" href="https://employee.verification.raskbind.com/" target="_blank">Open system →</a>
+              <a class="tool-link" href="#" target="_blank">Open system →</a>
             </div>
             <div class="tool-card">
               <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1428,8 +1459,7 @@
                 </svg></div>
               <div class="tool-title">Invoice Generator</div>
               <div class="tool-desc">Create due or paid invoices, logged straight to the sheet.</div>
-              <a class="tool-link" href="https://hunkwade.github.io/invoice-generator/" target="_blank">Open generator
-                →</a>
+              <a class="tool-link" href="#" target="_blank">Open generator →</a>
             </div>
             <div class="tool-card">
               <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1439,7 +1469,7 @@
                 </svg></div>
               <div class="tool-title">Letterhead Generator</div>
               <div class="tool-desc">Generate branded Raskbind X letterheads for official documents.</div>
-              <a class="tool-link" href="https://hunkwade.github.io/letterhead/" target="_blank">Open generator →</a>
+              <a class="tool-link" href="#" target="_blank">Open generator →</a>
             </div>
             <div class="tool-card">
               <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1448,8 +1478,7 @@
                 </svg></div>
               <div class="tool-title">Invoice Sender Template</div>
               <div class="tool-desc">Ready-made email templates for sending invoices to clients.</div>
-              <a class="tool-link" href="https://hunkwade.github.io/invoice-mail-sender/" target="_blank">Open templates
-                →</a>
+              <a class="tool-link" href="#" target="_blank">Open templates →</a>
             </div>
           </div>
         </div>
@@ -1480,15 +1509,37 @@
     </div>
   </div>
 
+  <!-- Schedule interview modal -->
+  <div class="overlay" id="schedule-overlay" onclick="closeScheduleModal(event)">
+    <div
+      style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:100%; max-width:400px; background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:24px; z-index:42;"
+      onclick="event.stopPropagation()">
+      <div style="font-family:var(--font-display); font-weight:700; font-size:17px; margin-bottom:4px;">Schedule
+        interview</div>
+      <div id="schedule-candidate-name" style="font-size:12.5px; color:var(--muted); margin-bottom:18px;"></div>
+      <div class="field">
+        <label>Date &amp; time</label>
+        <input type="datetime-local" id="schedule-datetime"
+          style="width:100%; padding:11px 13px; background:#161719; border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:14px; outline:none;">
+      </div>
+      <div style="font-size:11.5px; color:var(--muted-2); margin:-8px 0 18px;">45-minute interview · calendar invite
+        sends automatically to the candidate's email</div>
+      <button class="btn-primary" id="schedule-confirm-btn" onclick="confirmScheduleMeeting()">Send invite</button>
+      <div class="login-error" id="schedule-error" style="display:none;"></div>
+      <a onclick="closeScheduleModal()"
+        style="display:block; text-align:center; margin-top:12px; font-size:12.5px; color:var(--muted-2); cursor:pointer;">Cancel</a>
+    </div>
+  </div>
+
   <script>
     /* ============================================================
        CONFIG
        Paste your Apps Script Web App deployment URL below.
        ============================================================ */
-    const API_URL = 'https://script.google.com/macros/s/AKfycbz0oT17Qy8jfm1UzEoiPMy7LsJiNWGrS4IPZ1ApTqD5kQ84GeSipKZHPghPjf3KkdIM/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbw22wjNhfPNK9nnL72cTs_cbNMXQA6x4okFAGEgKqv1iAYTHc4EZaELwJurOLrIn_Ec/exec';
 
     let SESSION = { token: null, isAdmin: false };
-    let DATA = { projects: [], payments: [], invoices: [], team: [], leads: [] };
+    let DATA = { projects: [], payments: [], invoices: [], team: [], leads: [], candidates: [] };
     let leadsPollTimer = null;
 
 
@@ -1766,7 +1817,7 @@
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         item.classList.add('active');
         const view = item.dataset.view;
-        ['overview', 'projects', 'invoices', 'leads', 'tools'].forEach(v => {
+        ['overview', 'projects', 'invoices', 'leads', 'candidates', 'tools'].forEach(v => {
           document.getElementById('view-' + v).style.display = (v === view) ? 'block' : 'none';
         });
         const titles = {
@@ -1774,6 +1825,7 @@
           projects: ['Projects', 'Every upcoming, running, pending and completed project.'],
           invoices: ['Invoices', 'Look up any invoice by number, or browse all records.'],
           leads: ['Leads', 'Every inquiry from your website, synced live from your queries sheet.'],
+          candidates: ['Candidates', 'Every application, with one-click interview scheduling.'],
           tools: ['Linked systems', 'Jump into the tools that power Raskbind X operations.']
         };
         document.getElementById('page-title').textContent = titles[view][0];
@@ -1785,6 +1837,9 @@
           startLeadsPolling();
         } else {
           stopLeadsPolling();
+        }
+        if (view === 'candidates') {
+          loadCandidates();
         }
       });
     });
@@ -1960,6 +2015,125 @@
       }
     }
 
+    /* ---------- CANDIDATES ---------- */
+    async function loadCandidates() {
+      document.getElementById('candidates-table-body').innerHTML =
+        `<tr><td colspan="8"><div class="drawer-loading" style="justify-content:center;"><span class="spinner"></span>Loading candidates…</div></td></tr>`;
+      try {
+        const resp = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'getCandidates', token: SESSION.token })
+        });
+        const res = await resp.json();
+        if (res.error) throw new Error(res.error);
+        DATA.candidates = res || [];
+        renderCandidatesTable();
+      } catch (err) {
+        document.getElementById('candidates-table-body').innerHTML =
+          `<tr><td colspan="8"><div class="empty">Couldn't load candidates. Check your connection and try again.</div></td></tr>`;
+      }
+    }
+
+    function renderCandidatesTable() {
+      const body = document.getElementById('candidates-table-body');
+      const navCount = document.getElementById('candidates-nav-count');
+      const rows = DATA.candidates;
+
+      const newCount = rows.filter(c => !c.Status || c.Status.trim() === '').length;
+      navCount.textContent = newCount > 0 ? newCount : '';
+
+      if (!rows.length) {
+        body.innerHTML = `<tr><td colspan="8"><div class="empty">No candidates yet</div></td></tr>`;
+        return;
+      }
+
+      body.innerHTML = rows.slice().reverse().map(c => {
+        const status = (c.Status || '').trim();
+        const scheduled = status.toLowerCase().startsWith('interview scheduled');
+        const statusHtml = status
+          ? `<span class="badge ${scheduled ? 'paid' : 'pending'}">${status}</span>`
+          : `<span class="badge pending">New</span>`;
+        const resume = c.resume
+          ? `<a href="${c.resume}" target="_blank" rel="noopener" style="color:var(--orange); font-weight:600;">Resume ↗</a>`
+          : '—';
+        const btn = scheduled
+          ? `<button disabled style="padding:7px 12px; background:var(--card); border:1px solid var(--border); color:var(--muted-2); border-radius:7px; font-size:12px; font-weight:600;">Scheduled</button>`
+          : `<button onclick='openScheduleModal(${c.rowIndex}, ${JSON.stringify(c.name || "this candidate")})' style="padding:7px 12px; background:var(--orange); border:none; color:#161719; border-radius:7px; font-size:12px; font-weight:600; white-space:nowrap;">📅 Schedule</button>`;
+
+        return `
+      <tr>
+        <td><strong>${c.name || '—'}</strong></td>
+        <td style="font-size:12px;">
+          <div>${c.email || '—'}</div>
+          <div class="mono" style="margin-top:2px;">${c.phone || ''}</div>
+        </td>
+        <td>${c.experience || '—'}</td>
+        <td>${c.role || '—'}</td>
+        <td>${resume}</td>
+        <td style="max-width:240px; font-size:12.5px; color:var(--muted); white-space:normal;">${c.message || ''}</td>
+        <td>${statusHtml}</td>
+        <td>${btn}</td>
+      </tr>
+    `;
+      }).join('');
+    }
+
+    let scheduleTarget = null; // { rowIndex, name }
+
+    function openScheduleModal(rowIndex, name) {
+      scheduleTarget = { rowIndex, name };
+      document.getElementById('schedule-candidate-name').textContent = `with ${name}`;
+      document.getElementById('schedule-datetime').value = '';
+      document.getElementById('schedule-error').style.display = 'none';
+      document.getElementById('schedule-overlay').classList.add('show');
+    }
+
+    function closeScheduleModal(e) {
+      if (e && e.target !== e.currentTarget) return;
+      document.getElementById('schedule-overlay').classList.remove('show');
+      scheduleTarget = null;
+    }
+
+    async function confirmScheduleMeeting() {
+      if (!scheduleTarget) return;
+      const dateTime = document.getElementById('schedule-datetime').value;
+      const errBox = document.getElementById('schedule-error');
+      const btn = document.getElementById('schedule-confirm-btn');
+      errBox.style.display = 'none';
+
+      if (!dateTime) {
+        errBox.textContent = 'Pick a date and time first.';
+        errBox.style.display = 'block';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="btn-loading"><span class="spinner"></span>Sending invite…</span>';
+
+      try {
+        const resp = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'scheduleMeeting', token: SESSION.token, rowIndex: scheduleTarget.rowIndex, dateTime })
+        });
+        const res = await resp.json();
+        if (res.error) {
+          errBox.textContent = res.error;
+          errBox.style.display = 'block';
+          return;
+        }
+        closeScheduleModal();
+        loadCandidates();
+      } catch (err) {
+        errBox.textContent = 'Could not reach the portal server. Try again.';
+        errBox.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Send invite';
+      }
+    }
+
     /* ---------- GLOBAL SEARCH ---------- */
     document.getElementById('global-search').addEventListener('input', (e) => {
       const q = e.target.value.toLowerCase();
@@ -1969,7 +2143,7 @@
       );
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
       document.querySelector('[data-view="projects"]').classList.add('active');
-      ['overview', 'projects', 'invoices', 'leads', 'tools'].forEach(v => {
+      ['overview', 'projects', 'invoices', 'leads', 'candidates', 'tools'].forEach(v => {
         document.getElementById('view-' + v).style.display = (v === 'projects') ? 'block' : 'none';
       });
       const body = document.getElementById('projects-table-body');
